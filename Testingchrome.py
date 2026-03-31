@@ -7,24 +7,40 @@ app = Flask(__name__)
 
 @app.route("/")
 def test():
-    print("🔥 Route triggered")
+    print("🔥 STEP 1: Route triggered")
 
-    options = Options()
-    options.add_argument("--headless")
+    try:
+        options = Options()
+        options.add_argument("--headless")
 
-    driver = webdriver.Remote(
-        command_executor="http://standalone-chrome:4444/wd/hub",
-        options=options
-    )
+        print("🚀 STEP 2: Connecting to Chrome")
 
-    driver.get("https://example.com")
+        driver = webdriver.Remote(
+            command_executor="http://standalone-chrome:4444/wd/hub",
+            options=options
+        )
 
-    time.sleep(5)  # so you can SEE session
+        print("🌐 STEP 3: Opening website")
 
-    title = driver.title
+        driver.get("https://example.com")
 
-    driver.quit()
+        time.sleep(5)  # so you can see session
 
-    return f"✅ Selenium working: {title}"
+        title = driver.title
+
+        print("✅ STEP 4: Page title fetched:", title)
+
+        driver.quit()
+
+        return f"""
+        ✅ SCRIPT IS RUNNING<br>
+        🚀 Selenium Connected<br>
+        🌐 Opened example.com<br>
+        📄 Title: {title}
+        """
+
+    except Exception as e:
+        print("❌ ERROR:", e)
+        return f"❌ Error: {str(e)}"
 
 app.run(host="0.0.0.0", port=3000)
