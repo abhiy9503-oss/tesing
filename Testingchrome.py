@@ -7,42 +7,24 @@ app = Flask(__name__)
 
 @app.route("/")
 def test():
-    print("🔥 Route triggered → Starting Selenium")
+    print("🔥 Route triggered")
 
-    try:
-        options = Options()
-        options.add_argument("--headless")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
+    options = Options()
+    options.add_argument("--headless")
 
-        print("🚀 Connecting to Chrome...")
+    driver = webdriver.Remote(
+        command_executor="http://standalone-chrome:4444/wd/hub",
+        options=options
+    )
 
-        driver = webdriver.Remote(
-            command_executor="http://standalone-chrome:4444/wd/hub",
-            options=options
-        )
+    driver.get("https://example.com")
 
-        print("🌐 Opening website...")
-        driver.get("https://example.com")
+    time.sleep(5)  # so you can SEE session
 
-        # Wait so you can SEE session in Selenium UI
-        time.sleep(5)
+    title = driver.title
 
-        title = driver.title
+    driver.quit()
 
-        print("✅ Page loaded:", title)
-
-        driver.quit()
-
-        return f"""
-        ✅ SELENIUM IS WORKING<br>
-        🌐 Opened: example.com<br>
-        📄 Title: {title}<br>
-        🔥 Check Selenium UI → session should appear
-        """
-
-    except Exception as e:
-        print("❌ ERROR:", e)
-        return f"❌ Error: {str(e)}"
+    return f"✅ Selenium working: {title}"
 
 app.run(host="0.0.0.0", port=3000)
